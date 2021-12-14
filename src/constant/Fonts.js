@@ -1,0 +1,32 @@
+export default {
+  manrope: 'Manrope',
+  muliSemiBold: 'Muli Semi Bold',
+  muliMedium: 'Muli Medium',
+  muliBolder: 'Muli Bolder',
+  sizes: {
+    xl: '56px',
+    l: '48px',
+    l2: '40px',
+    m2: '32px',
+    m1: '24px',
+    m: '20px',
+    s2: '18px',
+    s: '16px',
+    xs: '14px',
+    xs2: '12px',
+    xs3: '10px',
+  },
+  fontWeight: {
+    bold: '700',
+    medium: '500',
+  },
+  lineHeight: {
+    xl: '55px',
+    l: '33px',
+    m1: '27px',
+    m: '22px',
+    s1: '19px',
+    s: '16px',
+    xs: '14px',
+  },
+};
