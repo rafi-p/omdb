@@ -6,12 +6,18 @@ import {history, store } from './store/index';
 import {Navbar} from './components/index'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import './App.css'
 
 function App() {
   return (
     <Provider store={store}>
       <BrowserRouter>
-        <div className={'main-container'}>
+        <div
+          // className={
+          //   // 'main-container'
+          //   'container-fluid'
+          // }
+        >
           <Navbar/>
           <Router history={ history } />
           <ToastContainer/>

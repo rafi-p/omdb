@@ -1,0 +1,12 @@
+#dashboard {
+    .customMobileRow {
+        @media screen and (max-width: 576px) {
+            flex-wrap: unset;
+            & > * {
+                &:first-child {
+                    width: 50%;
+                }
+            }
+        }
+    }
+}
