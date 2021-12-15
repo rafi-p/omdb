@@ -4,11 +4,11 @@ import thunk from 'redux-thunk';
 
 import { History as history } from '../helpers/index';
 
-import prodListReducer from './productList/reducers';
+import omdbReducer from './omdb/reducers';
 const routeMiddleware = routerMiddleware(history);
 
 const rootReducer = combineReducers({
-	prodList: prodListReducer,
+	omdb: omdbReducer,
 	router: connectRouter(history),
 });
 
