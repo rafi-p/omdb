@@ -1,6 +1,6 @@
 # AiChat Catalogue - Technical Test
 
-This project was deployed by vercell - [Website]().
+This project was deployed by vercell - [Website](https://omdb-rafi-p.vercel.app/).
 
 ## Installation
 
