@@ -24,7 +24,11 @@ const Dashboard = props => {
   const [err, setErr] = useState('')
 
   const dataSearch = useSelector(state => state.omdb.data);
+  const loadingList = useSelector(state => state.omdb.loadingList);
   const getDataSearch = dispatch(omdbActions.getDataSearch);
+  const dataByCode = useSelector(state => state.omdb.dataByCode);
+  const loadingCode = useSelector(state => state.omdb.loadingCode);
+  const getDataByCode = dispatch(omdbActions.getDataByCode);
 
   const handleSubmit = (e) => {
     e.preventDefault()
@@ -37,6 +41,11 @@ const Dashboard = props => {
       console.log({err})
       setErr(err)
     })
+  }
+
+  const handleFetchCode = (code) => {
+    setErr('')
+    getDataByCode({code})
   }
 
   return (
@@ -66,9 +75,9 @@ const Dashboard = props => {
         </form>
       </div>
       {
-        dataSearch && Object.keys(dataSearch).length !== 0 && !err &&
+        dataSearch && dataSearch.Search && dataSearch.Search.length > 0 && !err && !loadingList &&
         <div
-          className={`${isMobile ? 'w-100' : 'w-50'} overflow-auto`}
+          className={`${isMobile ? 'w-100' : 'w-50'} overflow-auto table-wrapper-scroll-y my-custom-scrollbar`}
         >
           <table className="table">
             <thead>
@@ -80,44 +89,57 @@ const Dashboard = props => {
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <th
-                  scope="row"
-                >
-                  <span
-                    role="button"
-                    data-toggle="modal"
-                    data-target="#modalDetail"
-                  >
-                    {dataSearch.Title}
-                  </span>
-                </th>
-                <td>{dataSearch.Year}</td>
-                <td>{dataSearch.imdbID}</td>
-                <td><i className={`bi bi-star${false ? '-fill' : ''}`} role="button"></i></td>
-              </tr>
+              {
+                dataSearch.Search.map((el, i) => {
+                  return (
+                    <tr key={i}>
+                      <th
+                        scope="row"
+                      >
+                        <span
+                          role="button"
+                          data-toggle="modal"
+                          data-target="#modalDetail"
+                          onClick={() => handleFetchCode( el.imdbID)}
+                        >
+                          {el.Title}
+                        </span>
+                      </th>
+                      <td>{el.Year}</td>
+                      <td>{el.imdbID}</td>
+                      <td><i className={`bi bi-star${false ? '-fill' : ''}`} role="button"></i></td>
+                    </tr>
+                  )
+                })
+              }
             </tbody>
           </table>
+        </div>
+      }
+      {
+        loadingList && !err &&
+        <div className="spinner-border" role="status">
+          <span className="sr-only">Loading...</span>
         </div>
       }
       <div>
         {err}
       </div>
 
-      {
-        dataSearch && Object.keys(dataSearch).length !== 0 &&
         <div className="modal fade" id="modalDetail" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
           <div className="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
+          {
+            dataByCode && Object.keys(dataByCode).length !== 0 && !loadingCode &&
             <div className="modal-content">
               <div className="modal-header align-items-center">
-                <h5 className="modal-title font-weight-bold text-uppercase mr-3" id="exampleModalLabel">{dataSearch.Title}</h5>
+                <h5 className="modal-title font-weight-bold text-uppercase mr-3" id="exampleModalLabel">{dataByCode.Title}</h5>
                 <div
                   className='d-flex align-items-center bg-warning py-1 px-2 rounded text-secondary'
                 >
                   <i className={`bi bi-star-fill mr-1`}></i>
                   <span
                   >
-                    {dataSearch.imdbRating}
+                    {dataByCode.imdbRating}
                   </span>
                 </div>
                 <button type="button" className="close" data-dismiss="modal" aria-label="Close">
@@ -126,11 +148,11 @@ const Dashboard = props => {
               </div>
               <div className={`modal-body ${!isMobile ? 'd-flex' : 'align-items-center d-flex flex-column'}`}>
                 <div
-                  className={`mr-3  ${!isMobile ? 'w-100' : 'w-75'}`}
+                  className={`mr-3  ${!isMobile ? '' : 'w-75'}`}
                 >
                   <img
-                    src={dataSearch.Poster} alt=""
-                    className="img-fluid rounded"
+                    src={dataByCode.Poster} alt=""
+                    className={`rounded ${isMobile ? 'w-100' : ''}`}
                   />
                 </div>
                 <div
@@ -145,7 +167,7 @@ const Dashboard = props => {
                       Year
                     </div>
                     <div className='col-sm'>
-                      {!isMobile && ': ' }{dataSearch.Year}
+                      {!isMobile && ': ' }{dataByCode.Year}
                     </div>
                   </div>
                   <div
@@ -157,7 +179,7 @@ const Dashboard = props => {
                       Released
                     </div>
                     <div className='col-sm'>
-                      {!isMobile && ': ' }{dataSearch.Released}
+                      {!isMobile && ': ' }{dataByCode.Released}
                     </div>
                   </div>
                   <div
@@ -169,7 +191,7 @@ const Dashboard = props => {
                       Runtime
                     </div>
                     <div className='col-sm'>
-                      {!isMobile && ': ' }{dataSearch.Runtime}
+                      {!isMobile && ': ' }{dataByCode.Runtime}
                     </div>
                   </div>
                   <div
@@ -181,7 +203,7 @@ const Dashboard = props => {
                       Genre
                     </div>
                     <div className='col-sm'>
-                      {!isMobile && ': ' }{dataSearch.Genre}
+                      {!isMobile && ': ' }{dataByCode.Genre}
                     </div>
                   </div>
                   <div
@@ -193,7 +215,7 @@ const Dashboard = props => {
                       Director
                     </div>
                     <div className='col-sm'>
-                      {!isMobile && ': ' }{dataSearch.Director}
+                      {!isMobile && ': ' }{dataByCode.Director}
                     </div>
                   </div>
                   <div
@@ -205,7 +227,7 @@ const Dashboard = props => {
                       Actors
                     </div>
                     <div className='col-sm'>
-                      {!isMobile && ': ' }{dataSearch.Actors}
+                      {!isMobile && ': ' }{dataByCode.Actors}
                     </div>
                   </div>
                   <div
@@ -217,19 +239,21 @@ const Dashboard = props => {
                       Description
                     </div>
                     <div className='col-sm'>
-                      {!isMobile && ': ' }{dataSearch.Plot}
+                      {!isMobile && ': ' }{dataByCode.Plot}
                     </div>
                   </div>
                 </div>
               </div>
-              {/* <div className="modal-footer">
-                <button type="button" className="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" className="btn btn-primary">Save changes</button>
-              </div> */}
             </div>
+            }
+            {
+              loadingCode && !err &&
+              <div className="spinner-border text-white" role="status">
+                <span className="sr-only">Loading...</span>
+              </div>
+            }
           </div>
         </div>
-      }
     </div>
   );
 };
