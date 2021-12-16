@@ -9,7 +9,7 @@ export const getDataSearch = async(params, data) => {
   try {
 
     const uri = params
-    ?`&s=${params.search ? params.search : ''}`
+    ?`&s=${params.search ? params.search : ''}&page=${params.page ? params.page : ''}`
     : ''
 
     const response = await customFetch(`${Endpoints.url}${uri}`, 'GET', data, false);

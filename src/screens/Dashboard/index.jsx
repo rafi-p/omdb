@@ -9,7 +9,7 @@ import {
   Images,
   tempData
 } from '../../constant/index'
-import { convert } from '../../helpers/index';
+import { convert, LocalStorage } from '../../helpers/index';
 import * as omdbActions from '../../store/omdb/actions';
 import {
   BrowserView,
@@ -22,23 +22,32 @@ const Dashboard = props => {
   const dispatch = useDispatch();
   const [search, setSearch] = useState('')
   const [err, setErr] = useState('')
+  const [page, setPage] = useState(1)
+  let limit = 10
 
   const dataSearch = useSelector(state => state.omdb.data);
+  console.log("🚀 ~ file: index.jsx ~ line 29 ~ dataSearch", dataSearch)
   const loadingList = useSelector(state => state.omdb.loadingList);
   const getDataSearch = dispatch(omdbActions.getDataSearch);
   const dataByCode = useSelector(state => state.omdb.dataByCode);
   const loadingCode = useSelector(state => state.omdb.loadingCode);
   const getDataByCode = dispatch(omdbActions.getDataByCode);
+  const dataFave = useSelector(state => state.omdb.dataFave);
+  const saveToFav = dispatch(omdbActions.saveToFav);
+  const removeToFav = dispatch(omdbActions.removeToFav);
+
+  useEffect(() => {
+    LocalStorage.setOMDB(dataFave)
+  }, [dataFave])
 
   const handleSubmit = (e) => {
     e.preventDefault()
     setErr('')
-    getDataSearch({search})
+    getDataSearch({search, page})
     .then(res => {
 
     })
     .catch(err => {
-      console.log({err})
       setErr(err)
     })
   }
@@ -46,6 +55,33 @@ const Dashboard = props => {
   const handleFetchCode = (code) => {
     setErr('')
     getDataByCode({code})
+  }
+
+  const handleFav = (data) => {
+    console.log({data})
+    let action = null
+    if(data.status) {
+      action = removeToFav
+    } else {
+      action = saveToFav
+    }
+    action(null, data)
+    .then(res => {
+      getDataSearch({search, page})
+    })
+    .catch(err => {
+
+    })
+  }
+
+  useEffect(() => {
+    if(search) {
+      getDataSearch({search, page})
+    }
+  }, [page])
+
+  const isLastPage = () => {
+    return page === Math.ceil(Number(dataSearch.totalResults)/limit)
   }
 
   return (
@@ -77,7 +113,7 @@ const Dashboard = props => {
       {
         dataSearch && dataSearch.Search && dataSearch.Search.length > 0 && !err && !loadingList &&
         <div
-          className={`${isMobile ? 'w-100' : 'w-50'} overflow-auto table-wrapper-scroll-y my-custom-scrollbar`}
+          className={`${isMobile ? 'w-100' : 'w-50'} overflow-auto table-wrapper-scroll-y my-custom-scrollbar mb-3`}
         >
           <table className="table">
             <thead>
@@ -107,7 +143,14 @@ const Dashboard = props => {
                       </th>
                       <td>{el.Year}</td>
                       <td>{el.imdbID}</td>
-                      <td><i className={`bi bi-star${false ? '-fill' : ''}`} role="button"></i></td>
+                      <td>
+                        <i
+                          className={`bi bi-star${el.status ? '-fill' : ''}`}
+                          role="button"
+                          onClick={() => handleFav(el)}
+                        >
+                        </i>
+                      </td>
                     </tr>
                   )
                 })
@@ -125,6 +168,28 @@ const Dashboard = props => {
       <div>
         {err}
       </div>
+      {
+        dataSearch && dataSearch.Search && dataSearch.Search.length > 0 && !err &&
+        <div
+          className="pagination"
+        >
+          <i
+            className="bi bi-caret-left"
+            role="button"
+            onClick={() => page !== 1 && setPage(prevState => prevState - 1)}
+          ></i>
+          <div
+            className='mx-2'
+          >
+            {page}
+          </div>
+          <i
+            className="bi bi-caret-right"
+            role="button"
+            onClick={() => !isLastPage() && setPage(prevState => prevState + 1)}
+          ></i>
+        </div>
+      }
 
         <div className="modal fade" id="modalDetail" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
           <div className="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">

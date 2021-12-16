@@ -16,9 +16,18 @@ export const getDataByCodeRequest = () => ({
   type: actionTypes.GET_OMDB_CODE_REQUEST,
 });
 
-
 export const getDataByCodeSuccess = payload => ({
   type: actionTypes.GET_OMDB_CODE_SUCCESS,
+  payload: { ...payload },
+});
+
+export const saveToFavSuccess = payload => ({
+  type: actionTypes.ADD_FAVE,
+  payload: { ...payload },
+});
+
+export const removeToFavSuccess = payload => ({
+  type: actionTypes.REMOVE_FAVE,
   payload: { ...payload },
 });
 
@@ -48,6 +57,26 @@ export const getDataByCode = (dispatch, getState) => (params, body) => {
       resolve(dispatch(getDataByCodeSuccess({ data: data })));
     } else {
       reject(data?.Error);
+    }
+  });
+};
+
+export const saveToFav = (dispatch, getState) => (params, body) => {
+  return new Promise(async(resolve, reject) => {
+    if (body) {
+      resolve(dispatch(saveToFavSuccess({ data: body })));
+    } else {
+      reject('No data');
+    }
+  });
+};
+
+export const removeToFav = (dispatch, getState) => (params, body) => {
+  return new Promise(async(resolve, reject) => {
+    if (body) {
+      resolve(dispatch(removeToFavSuccess({ data: body })));
+    } else {
+      reject('No data');
     }
   });
 };
