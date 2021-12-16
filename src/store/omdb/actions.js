@@ -31,9 +31,15 @@ export const removeToFavSuccess = payload => ({
   payload: { ...payload },
 });
 
+export const removeDataSearchSuccess = () => ({
+  type: actionTypes.REMOVE_OMDB,
+});
+
 export const getDataSearch = (dispatch, getState) => (params, body) => {
   return new Promise(async(resolve, reject) => {
-    dispatch(getDataSearchRequest());
+    if(params && !params?.noLoading) {
+      dispatch(getDataSearchRequest());
+    }
     const apiFetch = await omdbServices.getDataSearch(params, body);
 
     const { status, data, statusText } = apiFetch;
@@ -78,5 +84,11 @@ export const removeToFav = (dispatch, getState) => (params, body) => {
     } else {
       reject('No data');
     }
+  });
+};
+
+export const removeDataSearch = (dispatch, getState) => (params, body) => {
+  return new Promise(async(resolve, reject) => {
+    resolve(dispatch(removeDataSearchSuccess()))
   });
 };

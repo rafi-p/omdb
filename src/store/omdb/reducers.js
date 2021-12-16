@@ -74,6 +74,14 @@ const setRemoveFave = (state, payload) => {
   };
 };
 
+const setRemoveOMDB = (state) => {
+
+  return {
+    ...state,
+    data: {},
+  };
+};
+
 const OMDBReducer = (state = initialState, action) => {
   switch (action.type) {
     case actionTypes.GET_OMDB_REQUEST:
@@ -88,6 +96,8 @@ const OMDBReducer = (state = initialState, action) => {
       return setFave(state, action.payload);
     case actionTypes.REMOVE_FAVE:
       return setRemoveFave(state, action.payload);
+    case actionTypes.REMOVE_OMDB:
+      return setRemoveOMDB(state);
     default:
       return state;
   }

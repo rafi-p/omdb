@@ -18,45 +18,20 @@ import {
   isMobile
 } from 'react-device-detect';
 
-const Dashboard = props => {
+const Favorites = props => {
   const dispatch = useDispatch();
-  const [search, setSearch] = useState('')
   const [err, setErr] = useState('')
-  const [page, setPage] = useState(1)
-  let limit = 10
-
-  const dataSearch = useSelector(state => state.omdb.data);
   const loadingList = useSelector(state => state.omdb.loadingList);
-  const getDataSearch = dispatch(omdbActions.getDataSearch);
   const dataByCode = useSelector(state => state.omdb.dataByCode);
   const loadingCode = useSelector(state => state.omdb.loadingCode);
   const getDataByCode = dispatch(omdbActions.getDataByCode);
   const dataFave = useSelector(state => state.omdb.dataFave);
   const saveToFav = dispatch(omdbActions.saveToFav);
   const removeToFav = dispatch(omdbActions.removeToFav);
-  const removeDataSearch = dispatch(omdbActions.removeDataSearch);
-
-  useEffect(() => {
-    return(() => {
-      removeDataSearch()
-    })
-  }, [])
 
   useEffect(() => {
     LocalStorage.setOMDB(dataFave)
   }, [dataFave])
-
-  const handleSubmit = (e) => {
-    e.preventDefault()
-    setErr('')
-    getDataSearch({search, page})
-    .then(res => {
-
-    })
-    .catch(err => {
-      setErr(err)
-    })
-  }
 
   const handleFetchCode = (code) => {
     setErr('')
@@ -71,55 +46,18 @@ const Dashboard = props => {
     } else {
       action = saveToFav
     }
-    action(null, {...data, status: !data.status})
-    .then(res => {
-      getDataSearch({search, page, noLoading: true})
-    })
-    .catch(err => {
-
-    })
-  }
-
-  useEffect(() => {
-    if(search) {
-      getDataSearch({search, page})
-    }
-  }, [page])
-
-  const isLastPage = () => {
-    return page === Math.ceil(Number(dataSearch.totalResults)/limit)
+    action(null, data)
   }
 
   return (
     <div
       className='d-flex flex-column align-items-center px-5'
-      id='dashboard'
+      id='favorite'
     >
-      <div
-        className={`my-5 ${isMobile ? 'w-100' : 'w-50'}`}
-      >
-        <form className="form-inline my-2 my-lg-0  w-100">
-          <input
-            className="form-control mr-sm-2 flex-grow-1"
-            type="search"
-            placeholder="Search"
-            aria-label="Search"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-          />
-          <button
-            className="btn btn-outline-success my-2 my-sm-0"
-            type="submit"
-            onClick={handleSubmit}
-          >
-            Search
-          </button>
-        </form>
-      </div>
       {
-        dataSearch && dataSearch.Search && dataSearch.Search.length > 0 && !err && !loadingList &&
+        dataFave && dataFave.length > 0 &&
         <div
-          className={`${isMobile ? 'w-100' : 'w-50'} overflow-auto table-wrapper-scroll-y my-custom-scrollbar`}
+          className={`${isMobile ? 'w-100' : 'w-50'} overflow-auto table-wrapper-scroll-y my-custom-scrollbar mt-5`}
         >
           <table className="table">
             <thead>
@@ -132,7 +70,7 @@ const Dashboard = props => {
             </thead>
             <tbody>
               {
-                dataSearch.Search.map((el, i) => {
+                dataFave.map((el, i) => {
                   return (
                     <tr key={i}>
                       <th
@@ -174,28 +112,6 @@ const Dashboard = props => {
       <div>
         {err}
       </div>
-      {
-        dataSearch && dataSearch.Search && dataSearch.Search.length > 0 && !err &&
-        <div
-          className="pagination my-3"
-        >
-          <i
-            className="bi bi-caret-left"
-            role="button"
-            onClick={() => page !== 1 && setPage(prevState => prevState - 1)}
-          ></i>
-          <div
-            className='mx-2'
-          >
-            {page}
-          </div>
-          <i
-            className="bi bi-caret-right"
-            role="button"
-            onClick={() => !isLastPage() && setPage(prevState => prevState + 1)}
-          ></i>
-        </div>
-      }
 
         <div className="modal fade" id="modalDetail" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
           <div className="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
@@ -329,4 +245,4 @@ const Dashboard = props => {
   );
 };
 
-export default Dashboard;
+export default Favorites;
