@@ -16,4 +16,6 @@ The app will automatically opened in your browser.
 
 ## Features
 
-*
+* Search movie by name
+* Modal pop up - detail movie
+* Add / remove movie to favorite page
