@@ -27,6 +27,7 @@ const Dashboard = props => {
 
   const dataSearch = useSelector(state => state.omdb.data);
   const loadingList = useSelector(state => state.omdb.loadingList);
+  console.log({loadingList, err})
   const getDataSearch = dispatch(omdbActions.getDataSearch);
   const dataByCode = useSelector(state => state.omdb.dataByCode);
   const loadingCode = useSelector(state => state.omdb.loadingCode);
@@ -151,7 +152,7 @@ const Dashboard = props => {
                       <td>{el.imdbID}</td>
                       <td>
                         <i
-                          className={`bi bi-star${el.status ? '-fill' : ''}`}
+                          className={`bi bi-star${el.status ? '-fill' : ''} buttonIcon`}
                           role="button"
                           onClick={() => handleFav(el)}
                         >
@@ -167,8 +168,12 @@ const Dashboard = props => {
       }
       {
         loadingList && !err &&
-        <div className="spinner-border" role="status">
-          <span className="sr-only">Loading...</span>
+        <div
+          className={`${isMobile ? 'w-100' : 'w-50'} d-flex align-items-center justify-content-center height-loading`}
+        >
+          <div className="spinner-border" role="status">
+            <span className="sr-only">Loading...</span>
+          </div>
         </div>
       }
       <div>
@@ -177,7 +182,7 @@ const Dashboard = props => {
       {
         dataSearch && dataSearch.Search && dataSearch.Search.length > 0 && !err &&
         <div
-          className="pagination my-3"
+          className={`pagination my-3 ${loadingList ? 'disabled custom-disabled' : ''}`}
         >
           <i
             className="bi bi-caret-left"

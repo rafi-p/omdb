@@ -6,6 +6,9 @@ import actionTypes from './actionTypes';
 export const getDataSearchRequest = () => ({
   type: actionTypes.GET_OMDB_REQUEST,
 });
+export const getDataSearchFailed = () => ({
+  type: actionTypes.GET_OMDB_FAILED,
+});
 
 export const getDataSearchSuccess = payload => ({
   type: actionTypes.GET_OMDB_SUCCESS,
@@ -47,6 +50,7 @@ export const getDataSearch = (dispatch, getState) => (params, body) => {
     if (status === 200 && data?.Response !== 'False') {
       resolve(dispatch(getDataSearchSuccess({ data: data })));
     } else {
+      dispatch(getDataSearchFailed());
       reject(data?.Error);
     }
   });

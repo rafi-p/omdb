@@ -21,7 +21,6 @@ import {
 const Favorites = props => {
   const dispatch = useDispatch();
   const [err, setErr] = useState('')
-  const loadingList = useSelector(state => state.omdb.loadingList);
   const dataByCode = useSelector(state => state.omdb.dataByCode);
   const loadingCode = useSelector(state => state.omdb.loadingCode);
   const getDataByCode = dispatch(omdbActions.getDataByCode);
@@ -55,7 +54,8 @@ const Favorites = props => {
       id='favorite'
     >
       {
-        dataFave && dataFave.length > 0 &&
+        dataFave && dataFave.length > 0
+        ?
         <div
           className={`${isMobile ? 'w-100' : 'w-50'} overflow-auto table-wrapper-scroll-y my-custom-scrollbar mt-5`}
         >
@@ -102,16 +102,13 @@ const Favorites = props => {
             </tbody>
           </table>
         </div>
-      }
-      {
-        loadingList && !err &&
-        <div className="spinner-border" role="status">
-          <span className="sr-only">Loading...</span>
+        :
+        <div
+          className='mt-5'
+        >
+          No Data
         </div>
       }
-      <div>
-        {err}
-      </div>
 
         <div className="modal fade" id="modalDetail" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
           <div className="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">

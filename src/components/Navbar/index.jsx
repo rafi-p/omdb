@@ -19,7 +19,7 @@ const NavbarComponent = props => {
       </button>
       <div className="collapse navbar-collapse" id="navbarNav">
         <ul className="navbar-nav">
-          <li className={`nav-item ${true ? '' : 'active'}`} onClick={(e) => {e.preventDefault(); history.push('/favorite')}}>
+          <li className={`nav-item ${pathname === '/favorite' ? 'active' : ''}`} onClick={(e) => {e.preventDefault(); history.push('/favorite')}}>
             <a className="nav-link font-weight-bolder" href="">Favorites</a>
           </li>
         </ul>

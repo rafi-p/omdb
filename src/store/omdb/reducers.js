@@ -16,6 +16,13 @@ const setDataReq= (state) => {
     loadingList: true
   };
 };
+const setDataFailed= (state) => {
+
+  return {
+    ...state,
+    loadingList: false
+  };
+};
 
 const setDataSearch = (state, payload) => {
   let temp = payload.data.Search
@@ -86,6 +93,8 @@ const OMDBReducer = (state = initialState, action) => {
   switch (action.type) {
     case actionTypes.GET_OMDB_REQUEST:
       return setDataReq(state);
+    case actionTypes.GET_OMDB_FAILED:
+      return setDataFailed(state);
     case actionTypes.GET_OMDB_SUCCESS:
       return setDataSearch(state, action.payload);
     case actionTypes.GET_OMDB_CODE_REQUEST:
